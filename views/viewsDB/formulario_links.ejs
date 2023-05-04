@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/default.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/formulario_links.css">
+    <title>Formulario Link</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+
+    <section id="main">
+        <div id="center">
+            <form action="/formulario-links" method="POST">
+                <h2>Añadir Enlace</h2>
+                <div class="horizontal">
+                    <select name="empresa" required>
+                        <option value="">Empresa</option>
+                        <% for (let i=0; i < empresas.length; i++) { %>
+                            <option value="<%= empresas[i].nombre %>"><%= empresas[i].nombre %></option>
+                        <% } %>
+                    </select>
+                    <select name="pais" required>
+                        <option value="">País</option>
+                        <% for (let i=0; i < paises.length; i++) { %>
+                            <option value="<%= paises[i].iso_code %>"><%= paises[i].pais %></option>
+                        <% } %>
+                    </select>
+                </div>
+                <div class="horizontal">
+                    <p>Fecha encargo: </p>
+                    <input type="date" name="fecha_encargo" required>
+                </div>
+                <div class="horizontal">
+                    <p>Fecha publicación: </p>
+                    <input type="date" name="fecha_publi">
+                </div>
+                <input type="text" placeholder="Url Destino" name="destino" required class="full">
+                <input type="text" placeholder="Url Origen" name="origen" required class="full">
+                <input type="text" placeholder="Coste (€)" name="coste" required class="full">
+                <input type="text" placeholder="Anchor Text" name="anchor_text" required class="full">
+                <div class="horizontal">
+                    <select name="plataforma" required>
+                        <option value="">Plataforma</option>
+                        <% for (let i=0; i < plataformas.length; i++) { %>
+                            <option value="<%= plataformas[i].nombre %>"><%= plataformas[i].nombre %></option>
+                        <% } %>
+                    </select>
+                    <input type="text" placeholder="Rel" name="rel">
+                </div>
+                <div class="horizontal">
+                    <select name="target" required>
+                        <option value="">Target</option>
+                        <option value="brand">Branding</option>
+                        <option value="kw">KeyWord</option>
+                    </select>
+                    <select name="estado" required>
+                        <option value="">Estado</option>
+                        <option value="En Proceso">En Proceso</option>
+                        <option value="Publicado">Publicado</option>
+                    </select>
+                </div>
+                 
+                <input type="submit" value="Añadir" id="button">
+            </form>
+            <div id="mensaje">
+                <% if (mensaje == 'exito'){ %>
+                    <h3 style="color: green;">Enlace subido exitosamente</h3>
+                <% } if (mensaje == 'error') { %>
+                    <h3 style="color: red;">Error al subir el Enlace</h3>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

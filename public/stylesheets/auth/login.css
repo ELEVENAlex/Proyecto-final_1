@@ -1,0 +1,49 @@
+#center{
+    background: #eeeeee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+}
+
+form{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+    width: 20rem;
+    height: 25rem;
+    background-color: #dddddd;
+    padding: 38px 24px;
+    border-radius: 20px;
+}
+
+hr{
+    width: 100%;
+}
+
+h1{
+    font-weight: 600;
+}
+
+input{
+    width: 100%;
+    padding: 10px;
+    font-size: 15px;
+    border-radius: 12px;
+    outline: none;
+    border: none;
+}
+
+#button{
+    background: #003883;
+    color: #eeeeee;
+    width: 50%;
+    transition: .1s;
+}
+
+#button:hover{
+    width: 55%;
+    cursor: pointer;
+}

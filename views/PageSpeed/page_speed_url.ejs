@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/default.css">
+    <link rel="stylesheet" href="/stylesheets/GoogleAPI/page_speed.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <title>Editar Link</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+
+    <section id="main">
+        <h1>Velocidad de carga en<br><%= datos_carga.url %></h1>
+
+        <div id="caja-tabla">
+            <table id="tabla">
+                <thead>
+                    <tr>
+                        <th>CATEGORIA</th>
+                        <th>loading experience</th>
+                        <th>Original Loading Experience</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Overall</td>
+                        <td class="<%= datos_carga.loading_ex %>"><%= datos_carga.loading_ex ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex %>"><%= datos_carga.origin_loading_ex ?? 'NULL' %></td>
+                    </tr>
+                    <tr>
+                        <td>Cumulative Layout Shift</td>
+                        <td class="<%= datos_carga.loading_ex_cls %>"><%= datos_carga.loading_ex_cls ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex_cls %>"><%= datos_carga.origin_loading_ex_cls ?? 'NULL' %></td>
+                    </tr>
+                    <tr>
+                        <td>Interaction to Next Paint</td>
+                        <td class="<%= datos_carga.loading_ex_inp %>"><%= datos_carga.loading_ex_inp ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex_inp %>"><%= datos_carga.origin_loading_ex_inp ?? 'NULL' %></td>
+                    </tr>
+                    <tr>
+                        <td>Time to First Byte</td>
+                        <td class="<%= datos_carga.loading_ex_ttfb %>"><%= datos_carga.loading_ex_ttfb ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex_ttfb %>"><%= datos_carga.origin_loading_ex_ttfb ?? 'NULL' %></td>
+                    </tr>
+                    <tr>
+                        <td>First Contentful Paint</td>
+                        <td class="<%= datos_carga.loading_ex_fcp %>"><%= datos_carga.loading_ex_fcp ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex_fcp %>"><%= datos_carga.origin_loading_ex_fcp ?? 'NULL' %></td>
+                    </tr>
+                    <tr>
+                        <td>First Input Delay</td>
+                        <td class="<%= datos_carga.loading_ex_fid %>"><%= datos_carga.loading_ex_fid ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex_fid %>"><%= datos_carga.origin_loading_ex_fid ?? 'NULL' %></td>
+                    </tr>
+                    <tr>
+                        <td>Largest Contentful Paint</td>
+                        <td class="<%= datos_carga.loading_ex_lcp %>"><%= datos_carga.loading_ex_lcp ?? 'NULL' %></td>
+                        <td class="<%= datos_carga.origin_loading_ex_lcp %>"><%= datos_carga.origin_loading_ex_lcp ?? 'NULL' %></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#tabla').DataTable({
+                searching: false,
+                paging: false,
+                info: false,
+            })
+        })
+    </script>
+</body>
+</html>

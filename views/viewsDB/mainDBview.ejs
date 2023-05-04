@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/visibilidad_general.css">
+    <title>Dashboard SEO</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+    <section id="main">
+        <h1>Visibilidad por país</h1>
+
+        <ul id="selectorpais">
+            <% for(let i=0; i<paises.length; i++){ %>
+                <li><a href="/dashboard_pais/<%= paises[i].iso_code %>"><span class="fi fi-<%= paises[i].iso_code %>"></span></a></li>
+            <% } %>
+        </ul>
+
+        <div class="div-caja" id="selectorkw">
+            <% for(let i=0; i<keywords.length; i++){ %>
+                <button class="selector <% if(keywords[i].target == 'todo'){%>seleccionado<%} %>" onclick="cambiarVista('<%= keywords[i].target %>')"><%= keywords[i].target.charAt(0).toUpperCase() + keywords[i].target.slice(1) %></button>
+            <% } %>
+        </div>
+
+        <% for(let l=0; l<keywords.length; l++){ %>
+        <section id="<%= keywords[l].target %>" class="vista">
+            <% for(let i=0; i<empresas.length; i++){ %>
+                <div class="caja-empresa div-caja">
+                    <% let nombre_empresa = empresas[i].nombre %>
+                    <img src="/images/empresas/<%= nombre_empresa %>.png" alt="">
+                    <h3>Visibilidad</h3>
+                    <table class="tabla">
+                        <tr>
+                            <th>País</th>
+                            <th>Fecha Inicio</th>
+                            <th>Última fecha</th>
+                            <th>Mejora</th>
+                        </tr>
+                        <% for(let j=0; j<datos_visibilidad.length; j++){ %>
+                            <% if(datos_visibilidad[j].length>0){ %>
+                                <tr>
+                                    <td><span class="fi fi-<%= paises[j].iso_code %>"></span></td>
+                                    <% for(let k=0; k<datos_visibilidad[j].length; k++) { %>
+                                        <% if (nombre_empresa+'_'+keywords[l].target in datos_visibilidad[j][0] && datos_visibilidad[j][k][nombre_empresa+'_'+keywords[l].target]) { %>
+                                            <td class="fecha">
+                                                <span><%= datos_visibilidad[j][k].fecha.toISOString().split('T')[0] %></span>
+                                                <span id="bold"><%= datos_visibilidad[j][k][nombre_empresa+'_'+keywords[l].target] %></span>
+                                            </td>
+                                        <% }else{ %>
+                                            <td>No hay datos</td>
+                                        <% } %>
+                                    <% } %>
+                                    <td class="mejora"><%= (datos_visibilidad[j][1][nombre_empresa+'_'+keywords[l].target] - datos_visibilidad[j][0][nombre_empresa+'_'+keywords[l].target]).toFixed(2) %></td>
+                                </tr>
+                            <% } %>
+                        <% } %>
+                    </table>
+
+                    <h3>Enlaces</h3>
+                    <% if(!arr_enlaces[i].every(value => value === null)){ %>
+                    <table class="tabla_enlaces tabla">
+                        <tr>
+                            <th>País</th>
+                            <th>Núm. Enlaces</th>
+                            <th>Inversión</th>
+                        </tr>
+                        <% for(let j=0; j<paises.length; j++){ %>
+                            <% if(arr_enlaces[i][j]){ %>
+                                <tr>
+                                    <td><span class="fi fi-<%= paises[j].iso_code %>"></span></td>
+                                    <td><%= arr_enlaces[i][j].enlaces_publicados %> + <%= arr_enlaces[i][j].enlaces_enproceso %></td>
+                                    <td><%= arr_enlaces[i][j].inversion %> €</td>
+                                </tr>
+                            <% } %>
+                        <% } %>
+                        <tr class="total">
+                            <td>Total:</td>
+                            <td><%= suma_links[i].suma_publicados %> + <%= suma_links[i].suma_enproceso %></td>
+                            <td><%= suma_links[i].suma_inversion %> €</td>
+                        </tr>
+                    </table>
+                    <% } else {%>
+                        <h4 style="font-weight: 400;">No hay enlaces que mostrar</h4>
+                    <% } %>
+                </div>
+            <% } %>
+        </section>
+        <% } %>
+
+    </section>
+
+    <script>
+        const botones = Array.from(document.querySelectorAll('button.selector'));
+
+        var views = document.getElementsByClassName("vista")
+        for (var i = 0; i < views.length; i++) {
+            views[i].style.display = "none"
+        }
+        
+        var view = document.getElementById('todo')
+        view.style.display = "flex"
+
+        const mejoras = document.getElementsByClassName('mejora')
+
+        for (let i=0; i<mejoras.length; i++){
+            if(mejoras[i].innerHTML.charAt(0) == '-'){
+                mejoras[i].style.color = 'red'
+            }else if(mejoras[i].innerHTML!='NaN'){
+                mejoras[i].innerHTML = '+' + mejoras[i].innerHTML
+                mejoras[i].style.color = 'green'
+                if(mejoras[i].innerHTML=='+0.00'){
+                    mejoras[i].innerHTML = '0.00'
+                    mejoras[i].style.color = 'black'
+                }
+            }
+        }
+
+        // Agrega un escucha de eventos click a cada botón
+        botones.forEach((boton) => {
+            boton.addEventListener('click', () => {
+                botones.forEach((b) => {
+                    b.classList.remove('seleccionado')
+                })
+                boton.classList.add('seleccionado')
+            })
+        })
+
+        const cambiarVista = (viewId) => {
+            for (var i = 0; i < views.length; i++) {
+                views[i].style.display = "none"
+            }
+            
+            var view = document.getElementById(viewId)
+            view.style.display = "flex"
+        }
+    </script>
+</body>
+</html>

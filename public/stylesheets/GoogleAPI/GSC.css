@@ -1,0 +1,71 @@
+#main{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    background-color: #EEEEEE;
+    min-height: 100vh;
+}
+
+h1{
+    padding: 1rem;
+}
+
+#grafico{
+    width: 98%;
+    padding: 20px;
+    background-color: #DDDDDD;
+    font-size: 14px;
+    border-radius: 10px;
+    margin: 1rem;
+    height: 80vh;
+}
+
+#tabla{
+    width: 98%;
+    padding: 20px;
+    background-color: #DDDDDD;
+    font-size: 14px;
+    border-radius: 10px;
+    margin: 1rem;
+    overflow: hidden;
+    overflow-x: scroll;
+}
+
+.link{
+    color: black;
+    padding: 10px;
+    border-radius: 5px;
+    text-decoration: none;
+}
+
+.link:hover{
+    background-color: #bdbdbd;
+}
+
+
+@media (max-width: 765px){
+    #main{
+        padding-top: 40px;
+    }
+
+    #caja-tabla{
+        width: 98%;
+        overflow: hidden;
+        overflow-x: scroll;
+    }
+
+    table.dataTable{
+        font-size: 14px;
+    }
+
+    #grafico{
+        width: 98%;
+        padding: 5px;
+        background-color: #DDDDDD;
+        font-size: 14px;
+        border-radius: 10px;
+        margin: 1rem;
+        height: 40vh;
+    }
+}

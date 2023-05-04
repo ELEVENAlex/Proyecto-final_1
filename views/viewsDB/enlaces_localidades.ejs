@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/default.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/enlaces_localidades.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <title>Enlaces Localidades <%= pais.toUpperCase() %></title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+
+    <section id="main">
+        <h1 id="titulo">Enlaces Localidades</h1>
+
+        <ul id="selectorpais">
+            <% for(let i=0; i<paises.length; i++){ %>
+                <li><a href="/enlaces-localidades/<%= paises[i].iso_code %>"><span class="fi fi-<%= paises[i].iso_code %>"></span></a></li>
+            <% } %>
+        </ul>
+
+        <% if(targets[0] != null) { %>
+        <% if (targets[0].target != null) { %>
+        <div id="selectorfecha">
+            <div class="fecha">
+                <p>Fecha inicio</p>
+                <input type="date" id="fecha-inicio">
+            </div>
+            <div class="fecha">
+                <p>Fecha Fin</p>
+                <input type="date" placeholder="Fecha Fin" id="fecha-fin">
+            </div>
+            <button onclick="buscarFechas()" >Buscar</button>
+        </div>
+
+        <div id="selectorkw">
+            <% for(let i=0; i<targets.length; i++){ %>
+                <button class="selector <% if(targets[i].target == 'microcemento'){%>seleccionado<%} %>" onclick="cambiarVista('<%= targets[i].target.split(' ')[0] %>')"><%= targets[i].target %></button>
+            <% } %>
+        </div>
+
+        <section id="cajas">
+            <% for(let i=0; i < elementos.length; i++) { %>
+                <div class="caja <%= elementos[i].split(' ')[0] %>">
+                    <h2><%= elementos[i] %></h2>
+
+                    <table class="tabla">
+                        <thead>
+                            <tr>
+                                <th>SITIO</th>
+                                <th><%= inicio %></th>
+                                <th><%= fin %></th>
+                                <th>LINKS</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% for(let j=0; j < links[i].length; j++) { %>
+                                <tr>
+                                    <td><%= links[i][j].sitio %></td>
+                                    <td><%= ranks1[i][j] %></td>
+                                    <td><%= ranks0[i][j] %></td>
+                                    <td><%= links_SEO[i][j] %></td>
+                                </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+        </section>
+        <% } else { %>
+            <h2>No hay datos que mostrar</h2>
+        <% } %>
+        <% } else { %>
+            <h2>No hay datos que mostrar</h2>
+        <% } %>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.tabla').DataTable({
+                "dom": '<"table-responsive"t>',
+                searching: false,
+                paging: false,
+                info: false,
+                "order": [[ 2, "asc" ]],
+                columnDefs: [
+                    { targets: 1, width: '80px' },
+                    { targets: 2, width: '80px' }
+                ]
+            })
+        })
+
+        const cajas = document.getElementsByClassName('caja')
+        const botones = Array.from(document.querySelectorAll('button.selector'))
+        let microcemento = document.getElementsByClassName('microcemento')
+
+        botones.forEach((boton) => {
+            boton.addEventListener('click', () => {
+                botones.forEach((b) => {
+                    b.classList.remove('seleccionado')
+                })
+                boton.classList.add('seleccionado')
+            })
+        })
+
+        for(let i=0; i < cajas.length; i++) {
+            cajas[i].style.display = 'none'
+        }
+
+        for(let i=0; i < microcemento.length; i++) {
+            microcemento[i].style.display = 'flex'
+        }
+
+        const cambiarVista = (kw) => {
+            let cajas_visibles = document.getElementsByClassName(kw)
+            for (let i=0; i < cajas.length; i++) {
+                cajas[i].style.display = 'none'
+            }
+            for (let i=0; i < cajas_visibles.length; i++) {
+                cajas_visibles[i].style.display = 'flex'
+            }
+        }
+
+        const buscarFechas = () => {
+            const inicio = document.getElementById('fecha-inicio').value
+            const fin = document.getElementById('fecha-fin').value
+
+            window.location.replace('/enlaces-localidades/es?inicio='+ inicio +'&fin='+ fin)
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/visibilidad_general.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <title>Dashboard (<%= pais.toUpperCase() %>)</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+    <section id="main">
+        <h1>Visibilidad en <span class="fi fi-<%= pais %>"></h1>
+
+        <ul id="selectorpais">
+            <% for(let i=0; i<paises.length; i++){ %>
+                <li><a href="/dashboard_pais/<%= paises[i].iso_code %>"><span class="fi fi-<%= paises[i].iso_code %>"></span></a></li>
+            <% } %>
+        </ul>
+
+        <div class="div-caja" id="selectorkw">
+            <% for(let i=0; i<keywords.length; i++){ %>
+                <button class="selector <% if(keywords[i].target == 'todo'){%>seleccionado<%} %>" onclick="cambiarVista('<%= keywords[i].target %>')"><%= keywords[i].target.charAt(0).toUpperCase() + keywords[i].target.slice(1) %></button>
+            <% } %>
+        </div>
+
+        <% for(let i=0; i<keywords.length; i++){ %>
+            <div id="<%= keywords[i].target %>" class="vista-grafico div-caja">
+                <canvas id="grafico_<%= keywords[i].target %>" class="grafico"></canvas>
+            </div>
+            <div class="vista-slider div-caja" id="<%= keywords[i].target %>-slider">
+                <input type="text" class="datepicker" id="date-range-<%= keywords[i].target %>" />
+            </div>
+
+            <section id="<%= keywords[i].target %>-cajas" class="vista">
+                <% for(let l=0; l<empresas.length; l++){ %>
+                    <div class="caja-empresa div-caja">
+                        <% let nombre_empresa = empresas[l].nombre %>
+                        <img src="/images/empresas/<%= nombre_empresa %>.png" alt="">
+                        <table class="tabla">
+                            <tr>
+                                <th>País</th>
+                                <th>Fecha Inicio</th>
+                                <th>Última fecha</th>
+                                <th>Mejora</th>
+                            </tr>
+                            <% for(let j=0; j<datos_visibilidad_reducido.length; j++){ %>
+                                <% if(datos_visibilidad_reducido[j].length>0){ %>
+                                    <tr>
+                                        <td><span class="fi fi-<%= pais %>"></span></td>
+                                        <% for(let k=0; k<datos_visibilidad_reducido[j].length; k++) { %>
+                                            <% if (nombre_empresa+'_'+keywords[i].target in datos_visibilidad_reducido[j][0] && datos_visibilidad_reducido[j][k][nombre_empresa+'_'+keywords[i].target]) { %>
+                                                <td class="fecha">
+                                                    <span><%= datos_visibilidad_reducido[j][k].fecha.toISOString().split('T')[0] %></span>
+                                                    <span id="bold"><%= datos_visibilidad_reducido[j][k][nombre_empresa+'_'+keywords[i].target] %></span>
+                                                </td>
+                                            <% }else{ %>
+                                                <td>No hay datos</td>
+                                            <% } %>
+                                        <% } %>
+                                        <td class="mejora"><%= (datos_visibilidad_reducido[j][1][nombre_empresa+'_'+keywords[i].target] - datos_visibilidad_reducido[j][0][nombre_empresa+'_'+keywords[i].target]).toFixed(2) %></td>
+                                    </tr>
+                                <% } %>
+                            <% } %>
+                        </table>
+                    </div>
+                <% } %>
+            </section>
+        <% } %>
+        <section class="vista-tabla" id="todo-tabla">
+            <table id="todo-tabla-datatables">
+                <thead>
+                    <tr>
+                        <th colspan="2">TARGET</th>
+                        <th colspan="3">TOPCIMENT</th>
+                        <th colspan="3">MYREVEST</th>
+                        <th colspan="3">LUXURY</th>
+                        <th colspan="3">SMARTCRET</th>
+                    </tr>
+                    <tr>
+                        <th>KEYWORD</th>
+                        <th>BÚSQUEDAS</th>
+                        <th>RANK</th>
+                        <th>ENLACES</th>
+                        <th>INVERSIÓN</th>
+                        <th>RANK</th>
+                        <th>ENLACES</th>
+                        <th>INVERSIÓN</th>
+                        <th>RANK</th>
+                        <th>ENLACES</th>
+                        <th>INVERSIÓN</th>
+                        <th>RANK</th>
+                        <th>ENLACES</th>
+                        <th>INVERSIÓN</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let j=0; j < datos_tabla.length; j++){ %>
+                        <tr>
+                            <td><%= datos_tabla[j].kw %></td>
+                            <td><%= datos_tabla[j].volume_search %></td>
+                            <td><%= datos_tabla[j].rank_topcim || 100 %></td>
+                            <td><%= datos_tabla[j].links_topcim %></td>
+                            <% if(datos_tabla[j].inversion_topcim){ %>
+                                <td><%= parseFloat(datos_tabla[j].inversion_topcim).toFixed(2).replace('.', ',') %> €</td>
+                            <% } else { %>
+                                <td>0,00 €</td>
+                            <% } %>
+                            <td><%= datos_tabla[j].rank_myrevest || 100 %></td>
+                            <td><%= datos_tabla[j].links_myrevest %></td>
+                            <% if(datos_tabla[j].inversion_myrevest){ %>
+                                <td><%= parseFloat(datos_tabla[j].inversion_myrevest).toFixed(2).replace('.', ',') %> €</td>
+                            <% } else { %>
+                                <td>0,00 €</td>
+                            <% } %>
+                            <td><%= datos_tabla[j].rank_luxury || 100 %></td>
+                            <td><%= datos_tabla[j].links_luxury %></td>
+                            <% if(datos_tabla[j].inversion_luxury){ %>
+                                <td><%= parseFloat(datos_tabla[j].inversion_luxury).toFixed(2).replace('.', ',') %> €</td>
+                            <% } else { %>
+                                <td>0,00 €</td>
+                            <% } %>
+                            <td><%= datos_tabla[j].rank_smartcret || 100 %></td>
+                            <td><%= datos_tabla[j].links_smartcret %></td>
+                            <% if(datos_tabla[j].inversion_smartcret){ %>
+                                <td><%= parseFloat(datos_tabla[j].inversion_smartcret).toFixed(2).replace('.', ',') %> €</td>
+                            <% } else { %>
+                                <td>0,00 €</td>
+                            <% } %>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/javascripts/ion.rangeSlider.min.js"></script>
+    <script src="/javascripts/chart.umd.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        var results = JSON.parse('<%- datos_visibilidad %>')
+        console.log(results)
+        var empresas = JSON.parse('<%- empresas_string %>')
+        var keywords = JSON.parse('<%- keywords_string %>')
+        //console.log(empresas)
+        //console.log(results)
+
+
+        // SELECTOR DE KEYWORDS
+        const botones = Array.from(document.querySelectorAll('button.selector'))
+
+        views = document.querySelectorAll(".vista,.vista-grafico,.vista-slider")
+
+        for (let i = 0; i < views.length; i++) {
+            views[i].style.display = "none"
+        }
+
+        var view = document.getElementById('todo')
+        view.style.display = "flex"
+
+        var view2 = document.getElementById('todo-cajas')
+        view2.style.display = "flex"
+
+        var view3 = document.getElementById('todo-slider')
+        view3.style.display = "flex"
+
+
+        const mejoras = document.getElementsByClassName('mejora')
+
+        for (let i=0; i<mejoras.length; i++){
+            if(mejoras[i].innerHTML.charAt(0) == '-'){
+                mejoras[i].style.color = 'red'
+            }else if(mejoras[i].innerHTML!='NaN'){
+                mejoras[i].innerHTML = '+' + mejoras[i].innerHTML
+                mejoras[i].style.color = 'green'
+                if(mejoras[i].innerHTML=='+0.00'){
+                    mejoras[i].innerHTML = '0.00'
+                    mejoras[i].style.color = 'black'
+                }
+            }
+        }
+
+        botones.forEach((boton) => {
+            boton.addEventListener('click', () => {
+                botones.forEach((b) => {
+                    b.classList.remove('seleccionado')
+                })
+                boton.classList.add('seleccionado')
+            })
+        })
+
+        const cambiarVista = (viewId) => {
+            for (var i = 0; i < views.length; i++) {
+                views[i].style.display = "none"
+            }
+            
+            var view = document.getElementById(viewId)
+            view.style.display = "flex"
+
+            var view = document.getElementById(viewId+'-cajas')
+            view.style.display = "flex"
+
+            var view = document.getElementById(viewId+'-slider')
+            view.style.display = "flex"
+        }
+        
+        
+
+        //CREACIÓN DEL GRÁFICO
+        let graficos = []
+        let datos_graficos = []
+
+        for(let z=0; z<keywords.length; z++){
+            let ctx = document.getElementById("grafico_" + keywords[z].target).getContext("2d")
+
+            let data = []
+            for (let i=0; i<results.length; i++) {
+                const row = results[i]
+                let entry = {x: row.fecha.split('T')[0]}
+                for(let j=0; j<empresas.length; j++) {
+                    entry[empresas[j].nombre] = row[empresas[j].nombre+'_'+ keywords[z].target ]
+                }
+                data.push(entry)
+            }
+
+            datos_graficos.push(data)
+            //console.log(data)
+
+            datos_grafico = {
+                type: "line",
+                data: {
+                    datasets: []
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            min: 0,
+                            max: 100,
+                            ticks: {
+                                stepSize: 10
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                display: false
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 20
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            }
+
+            const colores = [
+                'black',
+                'rgb(255, 159, 64)',
+                'rgb(54, 162, 235)',
+                'rgb(75, 192, 192)',
+                '#FF6384',
+                '#FFCE56',
+                '#FF8A80',
+                '#A1887F',
+                '#FFD54F',
+                '#DCE775',
+                '#AED581',
+                '#E6EE9C',
+                '#90CAF9',
+                '#7986CB',
+                '#FFB74D',
+                '#FF7043',
+                '#9CCC65',
+                '#66BB6A'
+            ]
+
+            for(let i=0; i<empresas.length; i++){
+                let detalles_grafico = {
+                    label: empresas[i].nombre,
+                    data: data.map(d => ({ x: d.x, y: d[empresas[i].nombre] })),
+                    borderColor: colores[i],
+                    tension: 0.4,
+                    pointBackgroundColor: 'transparent',
+                    pointBorderColor: 'transparent'
+                }
+
+                datos_grafico.data.datasets.push(detalles_grafico)
+            }
+
+            if (data[0]){
+                if (data[0].topciment > 0){
+                    const chart = new Chart(ctx, datos_grafico)
+                    graficos.push(chart)
+                } else {
+                    let caja = document.getElementById(keywords[z].target)
+                    caja.innerHTML = 'No hay datos que mostrar'
+                }
+            } else {
+                let caja = document.getElementById(keywords[z].target)
+                caja.innerHTML = 'No hay datos que mostrar'
+            }
+        }
+
+
+        //SLIDER SELECTOR DE FECHA
+        var lang = "es-ES";
+        var year = 2018;
+        
+        function dateToTS (date) {
+            return date.valueOf();
+        }
+        
+        function tsToDate (ts) {
+            let date = new Date(ts)
+        
+            return date.toLocaleDateString(lang, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
+        const dateToYMD = (date) => {
+            let arr = date.split(' ')
+            return (arr[4] + '-' + (meses.indexOf(arr[2])+1).toString().padStart(2, '0') + '-' + arr[0].toString().padStart(2, '0'))
+        }
+
+        const getIndexDate = (date, array) => {
+            const index = array.findIndex((element) => element.x >= date)
+            if (index != -1){
+                return index
+            } else {
+                return array.length - 1
+            }
+        }
+
+        for(let i=0; i<keywords.length; i++){
+            if(results[0]){
+                $("#date-range-"+keywords[i].target).ionRangeSlider({
+                    skin: "flat",
+                    type: "double",
+                    grid: true,
+                    min: dateToTS(new Date(results[0].fecha)-1),
+                    max: dateToTS(new Date(results[results.length - 1].fecha)-1),
+                    from: dateToTS(new Date(results[0].fecha)-1),
+                    to: dateToTS(new Date(results[results.length - 1].fecha)-1),
+                    prettify: tsToDate,
+                    onFinish: function (data) {
+                        let pos = i
+                        let min = getIndexDate(dateToYMD(data.from_pretty), datos_graficos[pos])
+                        let max = getIndexDate(dateToYMD(data.to_pretty), datos_graficos[pos])
+
+                        let corte = datos_graficos[pos].slice(min, max - 1)
+
+                        for(let j=0; j<empresas.length; j++){
+                            graficos[pos].data.datasets[j].data = corte.map(d => ({ x: d.x, y: d[empresas[j].nombre] !== undefined ? d[empresas[j].nombre] : 0}))
+                        }
+                        graficos[pos].update()
+                    }
+                })
+            } else {
+                let caja = document.getElementById('date-range-'+keywords[i].target)
+                caja.style.display = 'none'
+            }
+        }
+
+        $(document).ready(function() {
+            $('#todo-tabla-datatables').DataTable({
+                
+            })
+        })
+    </script>
+</body>
+</html>

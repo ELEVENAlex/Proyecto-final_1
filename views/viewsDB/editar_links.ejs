@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/editar_links.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <title>Links <%= empresa +'_'+ pais %></title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+    <section id="main">
+        <h1>Links <%= empresa +'_'+ pais %></h1>
+        <section id="caja-tabla">
+            <table id="tabla">
+                <thead>
+                    <tr>
+                        <td>Encargo</td>
+                        <td>Destino</td>
+                        <td>Origen</td>
+                        <td>Coste</td>
+                        <td>plataforma</td>
+                        <td>Anchor text</td>
+                        <td>Rel</td>
+                        <td>Target</td>
+                        <td>Estado</td>
+                        <td>Entrega</td>
+                        <td><i class="fa-solid fa-pen-to-square"></i></td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i < datos_tabla.length; i++){ %>
+                        <tr>
+                            <%
+                                const fecha_encargo = new Date(datos_tabla[i].fecha_encargo)
+                                const dia_encargo = fecha_encargo.getDate().toString().padStart(2, "0")
+                                const mes_encargo = (fecha_encargo.getMonth() + 1).toString().padStart(2, "0")
+                                const anio_encargo = fecha_encargo.getFullYear().toString()
+                                const fechaFormateada_encargo = `${anio_encargo}-${mes_encargo}-${dia_encargo}`
+                                
+                                const fecha_entrega = new Date(datos_tabla[i].fecha_entrega)
+                                const dia_entrega = fecha_entrega.getDate().toString().padStart(2, "0")
+                                const mes_entrega = (fecha_entrega.getMonth() + 1).toString().padStart(2, "0")
+                                const anio_entrega = fecha_entrega.getFullYear().toString()
+                                let fechaFormateada_entrega = `${anio_entrega}-${mes_entrega}-${dia_entrega}`
+                                if(fechaFormateada_entrega == '1899-11-30'){
+                                    fechaFormateada_entrega = '0000-00-00'
+                                }
+                            %>
+
+                            <td><%= fechaFormateada_encargo %></td>
+                            <td><%= datos_tabla[i].url_destino %></td>
+                            <td><%= datos_tabla[i].url_origen %></td>
+                            <td><%= datos_tabla[i].coste %></td>
+                            <td><%= datos_tabla[i].plataforma %></td>
+                            <td><%= datos_tabla[i].anchor_text %></td>
+                            <td><%= datos_tabla[i].rel %></td>
+                            <td><%= datos_tabla[i].target %></td>
+                            <td><%= datos_tabla[i].estado %></td>
+                            <td><%= fechaFormateada_entrega %></td>
+                            <td class="buttons"><a href="/editar-link/<%= empresa +'_'+ pais %>/<%= datos_tabla[i].id %>"><i class="fa-solid fa-arrow-right"></i></a><a href="/eliminar-link/<%= empresa +'_'+ pais %>/<%= datos_tabla[i].id %>" class="delete"><i class="fa-solid fa-trash"></i></a></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </section>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#tabla').DataTable({
+                columnDefs: [
+                    { targets: 0, width: '80px' },
+                    { targets: 1, width: '100px' },
+                    { targets: 2, width: '100px' },
+                    { targets: 9, width: '80px' }
+                ],
+                lengthMenu: [20, 50, 100],
+                pageLength: 20
+            })
+        })
+    </script>

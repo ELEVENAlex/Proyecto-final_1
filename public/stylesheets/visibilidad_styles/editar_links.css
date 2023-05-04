@@ -1,0 +1,128 @@
+#main{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    background-color: #EEEEEE;
+    min-height: 100vh;
+}
+
+h1{
+    padding: 1rem;
+}
+
+#caja-tabla{
+    width: 98%;
+    padding: 20px;
+    background-color: #DDDDDD;
+    font-size: 14px;
+    border-radius: 10px;
+    overflow-x: scroll;
+    margin-bottom: 10px;
+}
+
+#tabla td:nth-child(2),
+#tabla td:nth-child(3) {
+    max-width: 200px;
+    width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#tabla td:nth-child(6),
+#tabla td:nth-child(7){
+    max-width: 50px;
+    width: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#tabla td:nth-child(5){
+    max-width: 50px;
+    width: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#tabla td:nth-child(11){
+    min-width: 50px;
+    width: 50px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#tabla a{
+    color: white;
+    padding: 10px;
+    background-color: #003883;
+    border-radius: 5px;
+}
+
+.delete{
+    background-color: #da0000 !important;
+    margin-left: 5px;
+}
+
+.delete:hover{
+    background-color: #a00000 !important;
+}
+
+#tabla a:hover{
+    background-color: #0048a7;
+}
+
+#tabla tr {
+    line-height: 30px;
+}
+
+@media (max-width: 765px){
+    table.dataTable{
+        font-size: 10px;
+    }
+
+    #main{
+        padding-top: 40px;
+    }
+
+    #caja-tabla{
+        width: 98%;
+        overflow: hidden;
+        overflow-x: scroll;
+    }
+
+    #tabla td:nth-child(2),
+    #tabla td:nth-child(3) {
+        max-width: 50px;
+        width: 50px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #tabla td:nth-child(1),
+    #tabla td:nth-child(5),
+    #tabla td:nth-child(6),
+    #tabla td:nth-child(7),
+    #tabla td:nth-child(9),
+    #tabla td:nth-child(10){
+        max-width: 20px;
+        width: 20px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    #tabla td:nth-child(4),
+    #tabla td:nth-child(8),
+    #tabla td:nth-child(11){
+        max-width: 6px;
+        width: 6px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

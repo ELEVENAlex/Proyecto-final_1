@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/default.css">
+    <link rel="stylesheet" href="/stylesheets/GoogleAPI/page_speed.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <title>Editar Link</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+
+    <section id="main">
+        <h1>Velocidad de carga de las Páginas</h1>
+
+        <div id="caja-tabla">
+            <table id="tabla">
+                <thead>
+                    <tr>
+                        <th>URL</th>
+                        <th>Loading Experience</th>
+                        <th>Original Loading Experience</th>
+                        <th><i class="fa-solid fa-pen-to-square"></i></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i<datos_carga.length; i++) { %>
+                        <tr>
+                            <td><a href="<%= datos_carga[i].url %>" class="link" target="_blank"><%= datos_carga[i].url %></a></td>
+                            <td class="<%= datos_carga[i].loading_ex %>"><%= datos_carga[i].loading_ex ?? 'NULL' %></td>
+                            <td class="<%= datos_carga[i].loading_ex %>"><%= datos_carga[i].origin_loading_ex ?? 'NULL' %></td>
+                            <td><a href="/page-speed-url?url=<%= datos_carga[i].url %>" class="redirect"><i class="fa-solid fa-arrow-right"></i></a></td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#tabla').DataTable({
+                lengthMenu: [20, 50, 100],
+                pageLength: 20
+            })
+        })
+    </script>
+</body>
+</html>

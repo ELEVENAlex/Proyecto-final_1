@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/default.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/formulario_links.css">
+    <title>Editar Link</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+
+    <section id="main">
+        <div id="center">
+            <form action="/editar-link/<%= tabla %>/<%= id %>" method="POST">
+
+                <%
+                    const fecha_encargo = new Date(datos_link.fecha_encargo);
+                    const dia_encargo = fecha_encargo.getDate().toString().padStart(2, "0");
+                    const mes_encargo = (fecha_encargo.getMonth() + 1).toString().padStart(2, "0"); // el mes se devuelve de 0 a 11, por lo que es necesario sumar 1
+                    const anio_encargo = fecha_encargo.getFullYear().toString();
+                    const fechaFormateada_encargo = `${anio_encargo}-${mes_encargo}-${dia_encargo}`
+                    
+                    const fecha_entrega = new Date(datos_link.fecha_entrega);
+                    const dia_entrega = fecha_entrega.getDate().toString().padStart(2, "0");
+                    const mes_entrega = (fecha_entrega.getMonth() + 1).toString().padStart(2, "0"); // el mes se devuelve de 0 a 11, por lo que es necesario sumar 1
+                    const anio_entrega = fecha_entrega.getFullYear().toString();
+                    const fechaFormateada_entrega = `${anio_entrega}-${mes_entrega}-${dia_entrega}`
+                %>
+
+                <h2>Editar Enlace</h2>
+                <div class="horizontal">
+                    <p>Fecha encargo: </p>
+                    <input type="date" name="fecha_encargo" value="<%= fechaFormateada_encargo %>" required>
+                </div>
+                <div class="horizontal">
+                    <p>Fecha publicación: </p>
+                    <input type="date" name="fecha_publi" <%if(anio_entrega != 1899){%>value="<%= fechaFormateada_entrega %>" <% } %>>
+                </div>
+                <input type="text" placeholder="Url Destino" name="destino" required class="full" value="<%= datos_link.url_destino %>">
+                <input type="text" placeholder="Url Origen" name="origen" required class="full" value="<%= datos_link.url_origen %>">
+                <input type="text" placeholder="Coste (€)" name="coste" required class="full" value="<%= datos_link.coste %>">
+                <input type="text" placeholder="Anchor Text" name="anchor_text" required class="full" value="<%= datos_link.anchor_text %>">
+                <div class="horizontal">
+                    <select name="plataforma" required>
+                        <option value="">Plataforma</option>
+                        <% for (let i=0; i < plataformas.length; i++) { %>
+                            <option value="<%= plataformas[i].nombre %>" <% if (plataformas[i].nombre == datos_link.plataforma) { %>selected<% } %>><%= plataformas[i].nombre %></option>
+                        <% } %>
+                    </select>
+                    <input type="text" placeholder="Rel" name="rel" value="<%= datos_link.rel %>">
+                </div>
+                <div class="horizontal">
+                    <select name="target" required>
+                        <option value="">Target</option>
+                        <option value="brand" <% if (datos_link.target == 'brand') { %>selected<% } %>>Branding</option>
+                        <option value="kw" <% if (datos_link.target == 'kw') { %>selected<% } %>>KeyWord</option>
+                    </select>
+                    <select name="estado" required>
+                        <option value="">Estado</option>
+                        <option value="En Proceso" <% if (datos_link.estado == 'En Proceso') { %>selected<% } %>>En Proceso</option>
+                        <option value="Publicado" <% if (datos_link.estado == 'Publicado') { %>selected<% } %>>Publicado</option>
+                    </select>
+                </div>
+                 
+                <input type="submit" value="Añadir" id="button">
+            </form>
+            <div id="mensaje">
+                <% if (mensaje == 'exito'){ %>
+                    <h3 style="color: green;">Enlace editado exitosamente</h3>
+                <% } if (mensaje == 'error') { %>
+                    <h3 style="color: red;">Error al editar el Enlace</h3>
+                <% } %>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

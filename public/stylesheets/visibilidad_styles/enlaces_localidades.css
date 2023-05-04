@@ -1,0 +1,213 @@
+#main{
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    background-color: #EEEEEE;
+    overflow: hidden;
+}
+
+#titulo{
+    margin: 1rem;
+}
+
+#selectorpais{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+#selectorpais li{
+    margin: 0 10px;
+    transition: .2s;
+}
+
+#selectorpais li:hover{
+    transform: scale(1.4);
+}
+
+#selectorfecha{
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+
+    width: 30vw;
+    background-color: #DDDDDD;
+    border-radius: 10px;
+    padding: 14px;
+    margin: 20px;
+}
+
+#selectorfecha input{
+    padding: 7px;
+    font-size: 16px;
+    border-radius: 10px;
+    background-color: #EEEEEE;
+    outline: none;
+    border: none;
+}
+
+#selectorfecha p{
+    padding-bottom: 10px;
+}
+
+#selectorfecha button{
+    background: #003883;
+    color: white;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+#selectorkw{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 20rem;
+    margin: 1rem 2rem;
+    flex-direction: row;
+}
+
+#selectorkw button {
+    cursor: pointer;
+}
+
+#selectorkw button:hover {
+    background-color: #e2e2e2;
+}
+
+.seleccionado{
+    background: #003883 !important;
+    color: #DDDDDD !important;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 3px;
+    border: none;
+}
+
+.selector{
+    background: #EEEEEE;
+    color: black;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: none;
+}
+
+#cajas{
+    display: flex;
+    align-items: start;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.caja{
+    width: 48%;
+    background-color: #DDDDDD;
+    border-radius: 6px;
+    box-shadow: 0px 1px 3px gray;
+    margin: 1rem;
+    padding: 10px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: column;
+}
+
+.caja h2{
+    margin: 10px;
+    font-size: 20px;
+}
+
+.table-responsive {
+    font-size: 14px;
+}
+  
+.table-responsive th,
+.table-responsive td {
+    font-size: 14px;
+}
+
+.caja td:nth-child(2),
+.caja td:nth-child(3) {
+    min-width: 93px;
+}
+
+@media (max-width: 1730px){
+    .caja{
+        width: auto
+    }
+}
+
+@media (max-width: 765px){
+    #selectorpais{
+        flex-wrap: wrap;
+    }
+    #selectorpais li{
+        margin: 5px;
+    }
+
+    #selectorkw{
+        width: 75%;
+        margin: 1rem 0;
+    }
+    
+    #selectorkw button {
+        font-size: 12px;
+    }
+
+    #selectorfecha{
+        width: 50%;
+        flex-direction: column;
+    }
+
+    #selectorfecha input, #selectorfecha button{
+        font-size: 14px;
+        padding: 5px;
+    }
+
+    #selectorfecha input{
+        margin-bottom: 5px;
+    }
+
+    #selectorfecha button{
+        margin-top: 7px;
+    }
+
+    #selectorfecha p{
+        padding-bottom: 2px;
+    }
+
+    table.dataTable{
+        width: 100%;
+    }
+
+    .caja{
+        width: 99%;
+    }
+
+    .caja td:nth-child(1){
+        max-width: 100px;
+        width: 100px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .caja td:nth-child(2),
+    .caja td:nth-child(3){
+        min-width: 30px;
+        width: 30px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+}

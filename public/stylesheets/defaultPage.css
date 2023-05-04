@@ -1,0 +1,21 @@
+#main{
+    margin-left: 16rem;
+}
+
+@media (max-width: 1355px){
+    #main{
+        margin-left: 12rem;
+    }
+}
+
+@media (max-width: 1140px){
+    #main{
+        margin-left: 8rem;
+    }
+}
+
+@media (max-width: 765px){
+    #main{
+        margin-left: 0;
+    }
+}

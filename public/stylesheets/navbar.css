@@ -1,0 +1,137 @@
+#check{
+    display: none;
+}
+
+@media (min-width: 765px){
+    nav{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        width: 16rem;
+        height: 100vh;
+        position: fixed;
+        background-color: #212529;
+    }
+    nav li{
+        list-style-type: none;
+    }
+    nav li a{
+        color: white;
+        display: block;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+    nav li a:hover {
+        background-color: #3b434b;
+        color: white;
+    }
+    
+    #logout{
+        font-size: 20px;
+    }
+    .checkbtn{
+        display: none;
+    }
+    #hamburguesa{
+        position: absolute;
+    }
+    #check{
+        position: absolute;
+    }
+
+    #menu{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        width: 16rem;
+        height: 100vh;
+        position: fixed;
+        background-color: #212529;
+        z-index: 10;
+        transition: .5s;
+    }
+
+    #menu li{
+        list-style-type: none;
+    }
+    #menu li a{
+        color: white;
+        display: block;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+    #menu li a:hover {
+        background-color: #3b434b;
+        color: white;
+    }
+
+    #check:checked ~ #menu{
+        left: 0;
+    }
+}
+
+
+
+@media (max-width: 1355px){
+    nav{
+        width: 12rem;
+    }
+}
+
+@media (max-width: 1140px){
+    nav{
+        width: 8rem;
+    }
+}
+
+@media (max-width: 765px){
+    nav{
+        width: 8rem;
+    }
+
+    #hamburguesa{
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: #212529;
+        color: white;
+        height: 40px;
+        width: 30px;
+        font-size: 27px;
+        z-index: 11;
+        width: 100%;
+        padding: 5px;
+    }
+
+    #menu{
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        width: 16rem;
+        height: 100vh;
+        position: fixed;
+        background-color: #212529;
+        z-index: 10;
+        padding-top: 6vh;
+        left: -100%;
+        transition: .5s;
+    }
+
+    #menu li{
+        list-style-type: none;
+    }
+    #menu li a{
+        color: white;
+        display: block;
+        padding: 8px 16px;
+        text-decoration: none;
+    }
+    #menu li a:hover {
+        background-color: #3b434b;
+        color: white;
+    }
+
+    #check:checked ~ #menu{
+        left: 0;
+    }
+}

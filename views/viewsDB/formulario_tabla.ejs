@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/default.css">
+    <link rel="stylesheet" href="/stylesheets/visibilidad_styles/formulario_tabla.css">
+    <title>Editar Links</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+
+    <section id="main">
+        <div id="center">
+            <form action="/editar-tabla" method="post">
+                <h1>Selecciona empresa y país</h1>
+                <hr>
+                
+                <select name="empresa" required>
+                    <option value="">Empresa</option>
+                    <% for(let i=0; i < empresas.length; i++) { %>
+                        <option value="<%= empresas[i].nombre %>"><%= empresas[i].nombre %></option>
+                    <% } %>
+                </select>
+                <select name="pais" required>
+                    <option value="">País</option>
+                    <% for(let i=0; i < paises.length; i++) { %>
+                        <option value="<%= paises[i].iso_code %>"><%= paises[i].pais %></option>
+                    <% } %>
+                </select>
+
+                <input type="submit" id="button">
+            </form>
+        </div>
+    </section>
+</body>
+</html>

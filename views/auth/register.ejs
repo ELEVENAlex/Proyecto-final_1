@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/auth/register.css' />
+    <title>Login</title>
+</head>
+<body>
+    <div id="center">
+        <form action="/register" method="post">
+            <h1>Registro usuario</h1>
+            <hr>
+            <input type="text" name="name" id="user" placeholder="Nombre" required>
+            <input type="text" name="username" id="username" placeholder="Username" required>
+            <input type="text" name="email" id="email" placeholder="Email" required>
+            <select name="role" id="role" required>
+                <option value="Administrador">Administrador</option>
+                <option value="Usuario" selected>Usuario</option>
+            </select>
+            <input type="password" name="password" id="password" placeholder="Contraseña" required>
+            <div id="botones">
+                <button class="button"><a href="/">Volver</a></button>
+                <input type="submit" class="button">
+            </div>
+        </form>
+        <div id="mensaje">
+            <% if (mensaje == 'exito'){ %>
+                <h3 style="color: green;">Usuario añadido exitosamente</h3>
+            <% } if (mensaje == 'error') { %>
+                <h3 style="color: red;">Error al añadir usuario</h3>
+            <% } %>
+        </div>
+    </div>
+</body>
+</html>

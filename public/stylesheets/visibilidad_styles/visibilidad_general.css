@@ -1,0 +1,253 @@
+.div-caja{
+    width: 95%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.seleccionado{
+    background: #003883 !important;
+    color: #DDDDDD !important;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 3px;
+    border: none;
+}
+
+.selector{
+    background: #EEEEEE;
+    color: black;
+    padding: 8px;
+    font-size: 15px;
+    border-radius: 3px;
+    border: none;
+}
+
+#main{
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    flex-direction: column;
+    background-color: #EEEEEE;
+    overflow: hidden;
+}
+
+#selectorkw{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 40%;
+    margin: 1rem 2rem;
+    flex-direction: row;
+}
+
+#selectorkw button {
+    cursor: pointer;
+}
+
+#selectorkw button:hover {
+    background-color: #e2e2e2;
+}
+
+#selectorpais{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+#selectorpais li{
+    margin: 0 10px;
+    transition: .2s;
+}
+
+#selectorpais li:hover{
+    transform: scale(1.4);
+}
+
+h1{
+    margin: 20px;
+}
+
+h3{
+    width: 96%;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+}
+
+.vista{
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+    flex-direction: row;
+    height: auto;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 0 2rem;
+}
+
+img{
+    height: 80px;
+    margin: 10px;
+}
+
+.vista .caja-empresa{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    padding: 1rem 10px;
+    width: 30%;
+    height: auto;
+    margin: 1rem;
+    background-color: #DDDDDD;
+    border-radius: 5px;
+}
+
+.caja-empresa h2{
+    margin: 15px;
+}
+
+.caja-empresa table{
+    width: 100%;
+}
+
+.caja-empresa table th{
+    border-bottom: 1px solid gray;
+}
+
+.caja-empresa tr td{
+    text-align: center;
+}
+
+.fecha span{
+    display: block
+}
+
+.fecha #bold{
+    font-weight: 600;
+}
+
+.tabla tr:nth-child(odd) {
+    background-color: #EEEEEE; /* fondo para líneas pares */
+}
+
+.total td{
+    padding-top: 10px;
+    color: green;
+}
+
+
+
+
+
+.grafico{
+    width: 100% !important;
+}
+
+.vista-grafico{
+    width: 97% !important;
+    height: 60vh;
+    background: #DDDDDD;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.irs{
+    width: 98%;
+    height: auto;
+}
+
+.vista-tabla{
+    width: 98%;
+    padding: 20px;
+    overflow-x: scroll;
+    background-color: #DDDDDD;
+    border-radius: 5px;
+    margin-bottom: 10px;
+
+}
+
+.datatables_wrapper{
+    display: block;
+}
+
+@media (max-width: 1355px){
+    .vista .caja-empresa{
+        width: 46%;
+    }
+}
+
+@media (max-width: 1140px){
+    .vista .caja-empresa{
+        width: 100%;
+    }
+}
+
+@media (max-width: 765px){
+    #main{
+        padding-top: 40px;
+    }
+    #selectorpais{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        list-style: none;
+        margin-bottom: 1rem;
+
+        flex-wrap: wrap;
+    }
+    #selectorpais li{
+        margin: 5px;
+    }
+
+    #selectorkw{
+        width: 75%;
+        margin: 1rem 0;
+    }
+    
+    #selectorkw button {
+        font-size: 12px;
+    }
+
+    h1{
+        margin: 15px;
+    }
+
+    .vista .caja-empresa{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-direction: column;
+        padding: 1rem 10px;
+        width: 100%;
+        height: auto;
+        margin: 1rem 0;
+        background-color: #DDDDDD;
+        border-radius: 5px;
+    }
+    .vista{
+        padding: 0 5px;
+    }
+
+    .vista .caja-empresa table{
+        font-size: 14px;
+    }
+
+    .vista-grafico{
+        height: 30vh;
+        padding: 0rem;
+        overflow: scroll;
+    }
+
+    table.dataTable td {
+        font-size: 14px
+    }
+    table.dataTable thead th{
+        font-size: 14px;
+    }
+}

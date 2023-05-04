@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/auth/login.css' />
+    <title>Login</title>
+</head>
+<body>
+    <div id="center">
+        <form action="/login" method="post">
+            <h1>Acceso usuario</h1>
+            <hr>
+            <input type="text" name="username" id="user" placeholder="Usuario">
+            <input type="password" name="password" id="password" placeholder="Contraseña">
+            <input type="submit" id="button">
+        </form>
+    </div>
+</body>
+</html>

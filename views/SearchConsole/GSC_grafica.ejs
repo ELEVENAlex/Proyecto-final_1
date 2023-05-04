@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../utilities/head') %>
+    <link rel='stylesheet' href='/stylesheets/navbar.css' />
+    <link rel="stylesheet" href="/stylesheets/defaultPage.css">
+    <link rel="stylesheet" href="/stylesheets/GoogleAPI/GSC.css">
+    <link rel="stylesheet" href="//cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+    <title>Login</title>
+</head>
+<body>
+    <%- include('../utilities/navbar') %>
+    <section id="main">
+        <h1>Google Search Console</h1>
+        <div id="grafico">
+                <canvas id="gráficoAnual"></canvas>
+        </div>
+        <div id="tabla">
+            <h1>Datos filtrados por enlace</h1>
+            <table id="datatable">
+                <thead>
+                    <tr>
+                        <th>ENLACE</th>
+                        <th>CLICKS</th>
+                        <th>IMPRESIONES</th>
+                        <th>CTR</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% for(let i=0; i<data2.length; i++) { %>
+                        <tr>
+                            <td><a href="<%= data2[i].keys[0] %>" class="link" target="_blank"><%= data2[i].keys[0] %></a></td>
+                            <td style="color: rgb(0, 119, 255)"><%= data2[i].clicks %></td>
+                            <td style="color: rgb(157, 45, 157)"><%= data2[i].impressions %></td>
+                            <td style="color: orange"><%= String(data2[i].ctr*100).slice(0, 5) %> %</td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="/javascripts/chart.umd.js"></script>
+    <script>
+        var data = JSON.parse('<%- data1 %>')
+        var ctx = document.getElementById('gráficoAnual').getContext('2d')
+        var myChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.map(function(d) { return d.keys[0]; }),
+                datasets: [{
+                    label: 'Clics',
+                    data: data.map(function(d) { return d.clicks; }),
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 2,
+                    tension: 0.4,
+                    pointBackgroundColor: 'transparent',
+                    pointBorderColor: 'transparent'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 0,
+                        ticks: {
+                            stepSize: 10
+                        }
+                    },
+                    x: {
+                        ticks: {
+                            display: false //this will remove only the label
+                        }
+                    }
+                },
+                elements: {
+                    point: {
+                        radius: 20
+                    }
+                },
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Número de clicks en el último año'
+                    }
+                }
+            }
+        })
+
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                
+            })
+        })
+    </script>
+</body>
+</html>
