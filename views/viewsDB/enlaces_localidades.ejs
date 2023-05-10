@@ -60,7 +60,7 @@
                                 <tr>
                                     <td><%= links[i][j].sitio %></td>
                                     <td><%= ranks1[i][j] %></td>
-                                    <td><%= ranks0[i][j] %></td>
+                                    <td <% if(ranks0[i][j] > ranks1[i][j]) { %> style='color: red;' <% } else if (ranks0[i][j] < ranks1[i][j]) { %> style='color: green;  ' <% } %>><%= ranks0[i][j] %></td>
                                     <td><%= links_SEO[i][j] %></td>
                                 </tr>
                             <% } %>

@@ -94,11 +94,16 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
 
   const [datos_visibilidad_reducido] = await pool.query('SELECT * FROM visibilidad_' + req.params.pais + ' WHERE fecha = ( SELECT MIN(fecha) FROM visibilidad_' + req.params.pais + ' ) or fecha = ( SELECT MAX(fecha) FROM visibilidad_' + req.params.pais + ' )')
 
+  var fecha = new Date()
+  var anio = fecha.getFullYear()
+  var mes = ('0' + (fecha.getMonth() + 1)).slice(-2)
+  var dia = ('0' + fecha.getDate()).slice(-2)
+  var fechaActual = anio + '-' + mes + '-' + dia
 
   //Datos que estaran en la tabla
   const [datos_tabla] = await pool.query(`
   SELECT 
-    distinct K.kw, volume_search,
+    distinct K.kw, volume_search, K.target,
     (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '2023-03-27' AND R.kw = K.kw AND url LIKE 'https://www.topciment.com/es/%' LIMIT 1) rank_topcim,
     (SELECT COUNT(url_destino) FROM topciment_`+ req.params.pais +` WHERE url_destino = url_topciment) AS links_topcim,
     (SELECT SUM(coste) FROM topciment_`+ req.params.pais +` WHERE url_destino = url_topciment) AS inversion_topcim,
