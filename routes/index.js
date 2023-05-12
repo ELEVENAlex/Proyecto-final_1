@@ -100,6 +100,10 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
   var dia = ('0' + fecha.getDate()).slice(-2)
   var fechaActual = anio + '-' + mes + '-' + dia
 
+  if(fecha.getHours <= 14){
+    fechaActual = anio + '-' + mes + '-' + ('0' + (fecha.getDate()-1)).slice(-2)
+  }
+
   //Datos que estaran en la tabla
   const [datos_tabla] = await pool.query(`
   SELECT 

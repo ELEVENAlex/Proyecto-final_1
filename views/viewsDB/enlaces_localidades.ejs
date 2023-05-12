@@ -37,7 +37,7 @@
 
         <div id="selectorkw">
             <% for(let i=0; i<targets.length; i++){ %>
-                <button class="selector <% if(targets[i].target == 'microcemento'){%>seleccionado<%} %>" onclick="cambiarVista('<%= targets[i].target.split(' ')[0] %>')"><%= targets[i].target %></button>
+                <button class="selector <% if(targets[i].target == 'microcemento'){%>seleccionado<%} %>" onclick="cambiarVista('<%= targets[i].target.split(` `)[0] %>')"><%= targets[i].target %></button>
             <% } %>
         </div>
 
