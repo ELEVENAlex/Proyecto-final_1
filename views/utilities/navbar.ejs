@@ -4,6 +4,7 @@
     var mes = ('0' + (fecha.getMonth() + 1)).slice(-2)
     var dia = ('0' + fecha.getDate()).slice(-2)
     var fechaActual = anio + '-' + mes + '-' + dia
+    var fechaAntes = anio + '-' + mes + '-' + ('0' + (fecha.getDate()-7)).slice(-2)
 %>
 
 <nav>
@@ -16,7 +17,7 @@
     <div id="menu">
         <div>
             <li><a href="/"><i class="fa-solid fa-house"></i> Inicio</a></li>
-            <li><a href="/enlaces-localidades/es?inicio=2021-12-09&fin=<%= fechaActual %>"><i class="fa-solid fa-earth-europe"></i> Enlaces Localidades</a></li>
+            <li><a href="/enlaces-localidades/es?inicio=<%= fechaAntes %>&fin=<%= fechaActual %>"><i class="fa-solid fa-earth-europe"></i> Enlaces Localidades</a></li>
             <li><a href="/formulario-links"><i class="fa-solid fa-floppy-disk"></i> Añadir Enlaces</a></li>
             <li><a href="/editar-links"><i class="fa-solid fa-pen-to-square"></i> Editar Enlaces</a></li>
             <li><a href="/GSC"><i class="fa-solid fa-chart-simple"></i> Google Search Console</a></li>

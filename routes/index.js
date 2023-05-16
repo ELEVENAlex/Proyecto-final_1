@@ -95,24 +95,34 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
   const [datos_visibilidad_reducido] = await pool.query('SELECT * FROM visibilidad_' + req.params.pais + ' WHERE fecha = ( SELECT MIN(fecha) FROM visibilidad_' + req.params.pais + ' ) or fecha = ( SELECT MAX(fecha) FROM visibilidad_' + req.params.pais + ' )')
 
 
+  var fecha = new Date()
+  var anio = fecha.getFullYear()
+  var mes = ('0' + (fecha.getMonth() + 1)).slice(-2)
+  var dia = ('0' + fecha.getDate()).slice(-2)
+  var fechaActual = anio + '-' + mes + '-' + dia
+  
+  if(fecha.getHours() <= 9){
+    fechaActual = anio + '-' + mes + '-' + ('0' + (fecha.getDate()-1)).slice(-2)
+  }
+
   //Datos que estaran en la tabla
   const [datos_tabla] = await pool.query(`
   SELECT 
-    distinct K.kw, volume_search,
-    (SELECT rank FROM rankings_es R WHERE DATE = '2023-03-27' AND R.kw = K.kw AND url LIKE 'https://www.topciment.com/es/%' LIMIT 1) rank_topcim,
-    (SELECT COUNT(url_destino) FROM topciment_es WHERE url_destino = url_topciment) AS links_topcim,
-    (SELECT SUM(coste) FROM topciment_es WHERE url_destino = url_topciment) AS inversion_topcim,
-    (SELECT rank FROM rankings_es R WHERE DATE = '2023-03-27' AND R.kw = K.kw AND url LIKE 'https://www.myrevest.com/es/%' LIMIT 1) rank_myrevest,
-    (SELECT COUNT(url_destino) FROM myrevest_es WHERE url_destino = url_myrevest) AS links_myrevest,
-    (SELECT SUM(coste) FROM myrevest_es WHERE url_destino = url_myrevest) AS inversion_myrevest,
-    (SELECT rank FROM rankings_es R WHERE DATE = '2023-03-27' AND R.kw = K.kw AND url LIKE 'https://www.luxuryconcrete.eu/es/%' LIMIT 1) rank_luxury,
-    (SELECT COUNT(url_destino) FROM luxury_es WHERE url_destino = url_luxury) AS links_luxury,
-    (SELECT SUM(coste) FROM luxury_es WHERE url_destino = url_luxury) AS inversion_luxury,
-    (SELECT rank FROM rankings_es R WHERE DATE = '2023-03-27' AND R.kw = K.kw AND url LIKE 'https://www.smartcret.com/%' LIMIT 1) rank_smartcret,
-    (SELECT COUNT(url_destino) FROM smartcret_es WHERE url_destino = url_smartcret) AS links_smartcret,
-    (SELECT SUM(coste) FROM smartcret_es WHERE url_destino = url_smartcret) AS inversion_smartcret
-  FROM kws_es K
-  LEFT JOIN topciment_es
+    distinct K.kw, volume_search, K.target,
+    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.topciment.com/%' LIMIT 1) rank_topcim,
+    (SELECT COUNT(url_destino) FROM topciment_`+ req.params.pais +` WHERE url_destino = url_topciment) AS links_topcim,
+    (SELECT SUM(coste) FROM topciment_`+ req.params.pais +` WHERE url_destino = url_topciment) AS inversion_topcim,
+    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.myrevest.com/%' LIMIT 1) rank_myrevest,
+    (SELECT COUNT(url_destino) FROM myrevest_`+ req.params.pais +` WHERE url_destino = url_myrevest) AS links_myrevest,
+    (SELECT SUM(coste) FROM myrevest_`+ req.params.pais +` WHERE url_destino = url_myrevest) AS inversion_myrevest,
+    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.luxuryconcrete.eu/%' LIMIT 1) rank_luxury,
+    (SELECT COUNT(url_destino) FROM luxury_`+ req.params.pais +` WHERE url_destino = url_luxury) AS links_luxury,
+    (SELECT SUM(coste) FROM luxury_`+ req.params.pais +` WHERE url_destino = url_luxury) AS inversion_luxury,
+    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.smartcret.com/%' LIMIT 1) rank_smartcret,
+    (SELECT COUNT(url_destino) FROM smartcret_`+ req.params.pais +` WHERE url_destino = url_smartcret) AS links_smartcret,
+    (SELECT SUM(coste) FROM smartcret_`+ req.params.pais +` WHERE url_destino = url_smartcret) AS inversion_smartcret
+  FROM kws_`+ req.params.pais +` K
+  LEFT JOIN topciment_`+ req.params.pais +`
   ON kw = anchor_text;
   `)
 
@@ -172,6 +182,7 @@ router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
         link_SEO_pack.push(suma)
 
         const [rank0] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + link[k].sitio + '" AND date = "' + req.query.fin + '" AND kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
+        console.log('SELECT rank FROM rankings_' + req.params.pais + '_ url = "' + link[k].sitio + '"e = "' + req.query.fin + '"kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
         if (rank0[0]) {
           rank_pack0.push(rank0[0].rank)
         } else {
@@ -179,6 +190,7 @@ router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
         }
 
         const [rank1] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + link[k].sitio + '" AND date = "' + req.query.inicio + '" AND kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
+        console.log('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + link[k].sitio + '" AND date = "' + req.query.inicio + '" AND kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
         if (rank1[0]) {
           rank_pack1.push(rank1[0].rank)
         } else {
@@ -194,7 +206,8 @@ router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
 
     }
   }
-
+  
++
   res.render('viewsDB/enlaces_localidades', {
     inicio: req.query.inicio,
     fin: req.query.fin,

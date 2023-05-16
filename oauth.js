@@ -1,5 +1,6 @@
 const searchConsole = require('@googleapis/searchconsole')
 const { google } = require('googleapis')
+require('dotenv').config();
 
 const auth = new searchConsole.auth.GoogleAuth({
     credentials: {
