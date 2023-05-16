@@ -94,6 +94,25 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
 
   const [datos_visibilidad_reducido] = await pool.query('SELECT * FROM visibilidad_' + req.params.pais + ' WHERE fecha = ( SELECT MIN(fecha) FROM visibilidad_' + req.params.pais + ' ) or fecha = ( SELECT MAX(fecha) FROM visibilidad_' + req.params.pais + ' )')
 
+  var fecha = new Date()
+  var anio = fecha.getFullYear()
+  var mes = ('0' + (fecha.getMonth() + 1)).slice(-2)
+  var dia = ('0' + fecha.getDate()).slice(-2)
+  var fechaActual = anio + '-' + mes + '-' + dia
+
+  if(fecha.getHours <= 14){
+    fechaActual = anio + '-' + mes + '-' + ('0' + (fecha.getDate()-1)).slice(-2)
+  }
+
+  var fecha = new Date()
+  var anio = fecha.getFullYear()
+  var mes = ('0' + (fecha.getMonth() + 1)).slice(-2)
+  var dia = ('0' + fecha.getDate()).slice(-2)
+  var fechaActual = anio + '-' + mes + '-' + dia
+  
+  if(fecha.getHours() <= 9){
+    fechaActual = anio + '-' + mes + '-' + ('0' + (fecha.getDate()-1)).slice(-2)
+  }
 
   var fecha = new Date()
   var anio = fecha.getFullYear()
