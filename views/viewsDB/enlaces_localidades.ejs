@@ -52,7 +52,7 @@
 
         <section id="cajas">
             <% for(let i=0; i < elementos.length; i++) { %>
-                <div class="caja <%= elementos[i].split(' ')[0] %>">
+                <div class="caja <%= kw[i] %>">
                     <h2><%= elementos[i] %></h2>
 
                     <table class="tabla">
@@ -67,7 +67,7 @@
                         <tbody>
                             <% for(let j=0; j < links[i].length; j++) { %>
                                 <tr>
-                                    <td><%= links[i][j].sitio %></td>
+                                    <td><%= links[i][j] %></td>
                                     <td><%= ranks1[i][j] %></td>
                                     <td <% if(ranks0[i][j] > ranks1[i][j]) { %> style='color: red;' <% } else if (ranks0[i][j] < ranks1[i][j]) { %> style='color: green;  ' <% } %>><%= ranks0[i][j] %></td>
                                     <td><%= links_SEO[i][j] %></td>

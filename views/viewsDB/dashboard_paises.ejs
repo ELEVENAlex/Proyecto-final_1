@@ -76,10 +76,22 @@
                             <th colspan="3">MYREVEST</th>
                             <th colspan="3">LUXURY</th>
                             <th colspan="3">SMARTCRET</th>
+                            <th colspan="3">BETONCIRE</th>
+                            <th colspan="3">LUTTUM</th>
+                            <th colspan="3">NATISO</th>
                         </tr>
                         <tr>
                             <th>KEYWORD</th>
                             <th>BÚSQUEDAS</th>
+                            <th>RANK</th>
+                            <th>ENLACES</th>
+                            <th>INVERSIÓN</th>
+                            <th>RANK</th>
+                            <th>ENLACES</th>
+                            <th>INVERSIÓN</th>
+                            <th>RANK</th>
+                            <th>ENLACES</th>
+                            <th>INVERSIÓN</th>
                             <th>RANK</th>
                             <th>ENLACES</th>
                             <th>INVERSIÓN</th>
@@ -100,10 +112,10 @@
                                 <tr>
                                     <td><%= datos_tabla[j].kw %></td>
                                     <td><%= datos_tabla[j].volume_search %></td>
-                                    <td><%= datos_tabla[j].rank_topcim || 100 %></td>
-                                    <td><%= datos_tabla[j].links_topcim %></td>
-                                    <% if(datos_tabla[j].inversion_topcim){ %>
-                                        <td><%= parseFloat(datos_tabla[j].inversion_topcim).toFixed(2).replace('.', ',') %> €</td>
+                                    <td><%= datos_tabla[j].rank_topciment || 100 %></td>
+                                    <td><%= datos_tabla[j].links_topciment %></td>
+                                    <% if(datos_tabla[j].inversion_topciment){ %>
+                                        <td><%= parseFloat(datos_tabla[j].inversion_topciment).toFixed(2).replace('.', ',') %> €</td>
                                     <% } else { %>
                                         <td>0,00 €</td>
                                     <% } %>
@@ -128,6 +140,27 @@
                                     <% } else { %>
                                         <td>0,00 €</td>
                                     <% } %>
+                                    <td><%= datos_tabla[j].rank_betoncire || 100 %></td>
+                                    <td><%= datos_tabla[j].links_betoncire %></td>
+                                    <% if(datos_tabla[j].inversion_betoncire){ %>
+                                        <td><%= parseFloat(datos_tabla[j].inversion_betoncire).toFixed(2).replace('.', ',') %> €</td>
+                                    <% } else { %>
+                                        <td>0,00 €</td>
+                                    <% } %>
+                                    <td><%= datos_tabla[j].rank_luttum || 100 %></td>
+                                    <td><%= datos_tabla[j].links_luttum %></td>
+                                    <% if(datos_tabla[j].inversion_luttum){ %>
+                                        <td><%= parseFloat(datos_tabla[j].inversion_luttum).toFixed(2).replace('.', ',') %> €</td>
+                                    <% } else { %>
+                                        <td>0,00 €</td>
+                                    <% } %>
+                                    <td><%= datos_tabla[j].rank_natiso || 100 %></td>
+                                    <td><%= datos_tabla[j].links_natiso %></td>
+                                    <% if(datos_tabla[j].inversion_natiso){ %>
+                                        <td><%= parseFloat(datos_tabla[j].inversion_natiso).toFixed(2).replace('.', ',') %> €</td>
+                                    <% } else { %>
+                                        <td>0,00 €</td>
+                                    <% } %>
                                 </tr>
                             <% } %>
                         <% } %>
@@ -144,7 +177,6 @@
     <script src="//cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
     <script>
         var results = JSON.parse('<%- datos_visibilidad %>')
-        console.log(results)
         var empresas = JSON.parse('<%- empresas_string %>')
         var keywords = JSON.parse('<%- keywords_string %>')
         //console.log(empresas)

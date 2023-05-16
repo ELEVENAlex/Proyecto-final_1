@@ -84,7 +84,7 @@ router.get('/', isLoggedIn, async (req, res) => {
 router.get('/dashboard_pais/:pais', async (req, res) => {
   const [rows] = await pool.query('SELECT * FROM visibilidad_' + req.params.pais)
   const [paises] = await pool.query('SELECT iso_code FROM paises')
-  const [empresas] = await pool.query('SELECT nombre FROM empresas')
+  const [empresas] = await pool.query('SELECT nombre, url FROM empresas')
 
   const [targets] = await pool.query('SELECT DISTINCT target FROM kws_es where target != ""')
   const keywords = [{ target: 'todo' }]
@@ -124,26 +124,17 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
     fechaActual = anio + '-' + mes + '-' + ('0' + (fecha.getDate()-1)).slice(-2)
   }
 
-  //Datos que estaran en la tabla
-  const [datos_tabla] = await pool.query(`
-  SELECT 
-    distinct K.kw, volume_search, K.target,
-    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.topciment.com/%' LIMIT 1) rank_topcim,
-    (SELECT COUNT(url_destino) FROM topciment_`+ req.params.pais +` WHERE url_destino = url_topciment) AS links_topcim,
-    (SELECT SUM(coste) FROM topciment_`+ req.params.pais +` WHERE url_destino = url_topciment) AS inversion_topcim,
-    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.myrevest.com/%' LIMIT 1) rank_myrevest,
-    (SELECT COUNT(url_destino) FROM myrevest_`+ req.params.pais +` WHERE url_destino = url_myrevest) AS links_myrevest,
-    (SELECT SUM(coste) FROM myrevest_`+ req.params.pais +` WHERE url_destino = url_myrevest) AS inversion_myrevest,
-    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.luxuryconcrete.eu/%' LIMIT 1) rank_luxury,
-    (SELECT COUNT(url_destino) FROM luxury_`+ req.params.pais +` WHERE url_destino = url_luxury) AS links_luxury,
-    (SELECT SUM(coste) FROM luxury_`+ req.params.pais +` WHERE url_destino = url_luxury) AS inversion_luxury,
-    (SELECT rank FROM rankings_`+ req.params.pais +` R WHERE DATE = '`+fechaActual+`' AND R.kw = K.kw AND url LIKE 'https://www.smartcret.com/%' LIMIT 1) rank_smartcret,
-    (SELECT COUNT(url_destino) FROM smartcret_`+ req.params.pais +` WHERE url_destino = url_smartcret) AS links_smartcret,
-    (SELECT SUM(coste) FROM smartcret_`+ req.params.pais +` WHERE url_destino = url_smartcret) AS inversion_smartcret
-  FROM kws_`+ req.params.pais +` K
-  LEFT JOIN topciment_`+ req.params.pais +`
-  ON kw = anchor_text;
-  `)
+  var query = 'SELECT distinct K.kw, volume_search, K.target'
+
+  for(let i=0; i<empresas.length; i++){
+    query = query + ', (SELECT rank FROM rankings_'+ req.params.pais +' R WHERE DATE = "'+fechaActual+'" AND R.kw = K.kw AND url LIKE "https://'+ empresas[i].url +'/%" LIMIT 1) rank_'+ empresas[i].nombre +', (SELECT COUNT(url_destino) FROM '+ empresas[i].nombre +'_'+ req.params.pais +' WHERE url_destino = url_'+ empresas[i].nombre +') AS links_'+ empresas[i].nombre +', (SELECT SUM(coste) FROM '+ empresas[i].nombre +'_'+ req.params.pais +' WHERE url_destino = url_'+ empresas[i].nombre +') AS inversion_'+ empresas[i].nombre +' '
+  }
+
+  query = query + 'FROM kws_'+ req.params.pais +' K LEFT JOIN topciment_'+ req.params.pais +' ON kw = anchor_text;'
+
+  const [datos_tabla] = await pool.query(query)
+
+  console.log(datos_tabla)
 
   res.render('viewsDB/dashboard_paises', {
     pais: req.params.pais,
@@ -162,71 +153,76 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
 
 router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
   const [paises] = await pool.query('SELECT iso_code FROM paises')
-
-  const [localidades] = await pool.query('SELECT DISTINCT localidad FROM sitios_localidades_' + req.params.pais)
-  const [targets] = await pool.query('SELECT DISTINCT target FROM sitios_localidades_' + req.params.pais)
+  const [empresas] = await pool.query('SELECT nombre FROM empresas')
+  const [localidades] = await pool.query('SELECT kw FROM localidades_' + req.params.pais)
 
   const elementos = []
-  const links = []
+  const targets = [ { target: 'microcemento' }, { target: 'hormigon impreso' } ]
+  const kw = []
   const ranks0 = []
   const ranks1 = []
   const links_SEO = []
 
+  const links = []
+  const [row] = await pool.query('SELECT * FROM localidades_' + req.params.pais)
+  for(let k=0; k<row.length; k++){
+    let pack = []
+    for(let j=0; j<empresas.length; j++){
+      if(row[k]['url_'+empresas[j].nombre].length > 0){
+        pack.push(row[k]['url_'+empresas[j].nombre])
+      }
+    }
+    links.push(pack)
+  }
 
-  for (let i = 0; i < localidades.length; i++) {
-    for (let j = 0; j < targets.length; j++) {
-      elementos.push(targets[j].target + ' ' + localidades[i].localidad)
+  for (let i = 0; i < links.length; i++) {
+    elementos.push(localidades[i].kw)
 
-      const [link] = await pool.query('SELECT sitio FROM sitios_localidades_' + req.params.pais + ' WHERE localidad = "' + localidades[i].localidad + '" AND target = "' + targets[j].target + '"')
 
-      const [empresas] = await pool.query('SELECT nombre FROM empresas')
+    let rank_pack0 = []
+    let rank_pack1 = []
+    let link_SEO_pack = []
 
-      let rank_pack0 = []
-      let rank_pack1 = []
-      let link_SEO_pack = []
+    for (let k = 0; k < links[i].length; k++) {
+      const [resultado] = await pool.query('SELECT target FROM sitios_localidades_'+ req.params.pais +' WHERE sitio = "'+ links[i][k] +'"')
+      if(resultado[0]){
+        kw.push(resultado[0].target)
+      } else {
+        kw.push('undefined')
+      }
 
-      for (let k = 0; k < link.length; k++) {
+      let suma = 0
 
-        let suma = 0
-
-        for (let l = 0; l < empresas.length; l++) {
-
-          let [tabla] = await pool.query('SELECT TABLE_NAME FROM information_schema.TABLES WHERE table_name = "' + empresas[l].nombre + '_' + req.params.pais + '"')
-          if (tabla.length > 0) {
-            const [num] = await pool.query('SELECT count(*) as suma FROM ' + empresas[l].nombre + '_' + req.params.pais + ' WHERE url_destino = "' + link[k].sitio + '"')
-            suma += num[0].suma
-          }
-        }
-
-        link_SEO_pack.push(suma)
-
-        const [rank0] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + link[k].sitio + '" AND date = "' + req.query.fin + '" AND kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
-        console.log('SELECT rank FROM rankings_' + req.params.pais + '_ url = "' + link[k].sitio + '"e = "' + req.query.fin + '"kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
-        if (rank0[0]) {
-          rank_pack0.push(rank0[0].rank)
-        } else {
-          rank_pack0.push(100)
-        }
-
-        const [rank1] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + link[k].sitio + '" AND date = "' + req.query.inicio + '" AND kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
-        console.log('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + link[k].sitio + '" AND date = "' + req.query.inicio + '" AND kw = "' + targets[j].target + ' ' + localidades[i].localidad + '"')
-        if (rank1[0]) {
-          rank_pack1.push(rank1[0].rank)
-        } else {
-          rank_pack1.push(100)
+      for (let l = 0; l < empresas.length; l++) {
+        let [tabla] = await pool.query('SELECT TABLE_NAME FROM information_schema.TABLES WHERE table_name = "' + empresas[l].nombre + '_' + req.params.pais + '"')
+        if (tabla.length > 0) {
+          const [num] = await pool.query('SELECT count(*) as suma FROM ' + empresas[l].nombre + '_' + req.params.pais + ' WHERE url_destino = "' + links[i][k] + '"')
+          suma += num[0].suma
         }
       }
 
-      ranks0.push(rank_pack0)
-      ranks1.push(rank_pack1)
-      links_SEO.push(link_SEO_pack)
+      link_SEO_pack.push(suma)
 
-      links.push(link)
+      const [rank0] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + links[i][k] + '" AND date = "' + req.query.fin + '" AND kw = "'+ localidades[i].kw + '"')
+      if (rank0[0]) {
+        rank_pack0.push(rank0[0].rank)
+      } else {
+        rank_pack0.push(100)
+      }
 
+      const [rank1] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + links[i][k] + '" AND date = "' + req.query.inicio + '" AND kw = "' + localidades[i].kw + '"')
+      if (rank1[0]) {
+        rank_pack1.push(rank1[0].rank)
+      } else {
+        rank_pack1.push(100)
+      }
     }
+
+    ranks0.push(rank_pack0)
+    ranks1.push(rank_pack1)
+    links_SEO.push(link_SEO_pack)
   }
-  
-+
+
   res.render('viewsDB/enlaces_localidades', {
     inicio: req.query.inicio,
     fin: req.query.fin,
@@ -238,7 +234,8 @@ router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
     ranks0,
     ranks1,
     links_SEO,
-    rol: req.user.role
+    rol: req.user.role,
+    kw
   })
 })
 
