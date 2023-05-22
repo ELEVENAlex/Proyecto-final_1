@@ -52,30 +52,62 @@
 
         <section id="cajas">
             <% for(let i=0; i < elementos.length; i++) { %>
-                <div class="caja <%= kw[i] %>">
-                    <h2><%= elementos[i] %></h2>
-
-                    <table class="tabla">
-                        <thead>
-                            <tr>
-                                <th>SITIO</th>
-                                <th><%= inicio %></th>
-                                <th><%= fin %></th>
-                                <th>LINKS</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <% for(let j=0; j < links[i].length; j++) { %>
+                <% if (kw[i].includes('microcemento')) { %>
+                    <div class="caja microcemento">
+                        <h2>microcemento <%= localidades[i].localidad %></h2>
+    
+                        <table class="tabla">
+                            <thead>
                                 <tr>
-                                    <td><%= links[i][j] %></td>
-                                    <td><%= ranks1[i][j] %></td>
-                                    <td <% if(ranks0[i][j] > ranks1[i][j]) { %> style='color: red;' <% } else if (ranks0[i][j] < ranks1[i][j]) { %> style='color: green;  ' <% } %>><%= ranks0[i][j] %></td>
-                                    <td><%= links_SEO[i][j] %></td>
+                                    <th>SITIO</th>
+                                    <th><%= inicio %></th>
+                                    <th><%= fin %></th>
+                                    <th>LINKS</th>
                                 </tr>
-                            <% } %>
-                        </tbody>
-                    </table>
-                </div>
+                            </thead>
+                            <tbody>
+                                <% for(let j=0; j < links[i].length; j++) { %>
+                                    <% if (kw[i][j] == 'microcemento') { %>
+                                        <tr>
+                                            <td><%= links[i][j] %></td>
+                                            <td><%= ranks1[i][j] %></td>
+                                            <td <% if(ranks0[i][j] > ranks1[i][j]) { %> style='color: red;' <% } else if (ranks0[i][j] < ranks1[i][j]) { %> style='color: green;  ' <% } %>><%= ranks0[i][j] %></td>
+                                            <td><%= links_SEO[i][j] %></td>
+                                        </tr>
+                                    <% } %>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
+                <% if (kw[i].includes('hormigon impreso')) { %>
+                    <div class="caja hormigon">
+                        <h2>hormigon impreso <%= localidades[i].localidad %></h2>
+    
+                        <table class="tabla">
+                            <thead>
+                                <tr>
+                                    <th>SITIO</th>
+                                    <th><%= inicio %></th>
+                                    <th><%= fin %></th>
+                                    <th>LINKS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% for(let j=0; j < links[i].length; j++) { %>
+                                    <% if (kw[i][j] == 'hormigon impreso') { %>
+                                        <tr>
+                                            <td><%= links[i][j] %></td>
+                                            <td><%= ranks1[i][j] %></td>
+                                            <td <% if(ranks0[i][j] > ranks1[i][j]) { %> style='color: red;' <% } else if (ranks0[i][j] < ranks1[i][j]) { %> style='color: green;  ' <% } %>><%= ranks0[i][j] %></td>
+                                            <td><%= links_SEO[i][j] %></td>
+                                        </tr>
+                                    <% } %>
+                                <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+                <% } %>
             <% } %>
         </section>
         <% } else { %>

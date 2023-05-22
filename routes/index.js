@@ -154,63 +154,54 @@ router.get('/dashboard_pais/:pais', async (req, res) => {
 router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
   const [paises] = await pool.query('SELECT iso_code FROM paises')
   const [empresas] = await pool.query('SELECT nombre FROM empresas')
-  const [localidades] = await pool.query('SELECT kw FROM localidades_' + req.params.pais)
+  const [localidades] = await pool.query('SELECT DISTINCT(localidad) FROM sitios_localidades_' + req.params.pais)
 
   const elementos = []
-  const targets = [ { target: 'microcemento' }, { target: 'hormigon impreso' } ]
+  const links_list = []
+  const [targets] = await pool.query('SELECT DISTINCT(target) FROM sitios_localidades_'+ req.params.pais)
   const kw = []
   const ranks0 = []
   const ranks1 = []
   const links_SEO = []
 
-  const links = []
-  const [row] = await pool.query('SELECT * FROM localidades_' + req.params.pais)
-  for(let k=0; k<row.length; k++){
-    let pack = []
-    for(let j=0; j<empresas.length; j++){
-      if(row[k]['url_'+empresas[j].nombre].length > 0){
-        pack.push(row[k]['url_'+empresas[j].nombre])
-      }
-    }
-    links.push(pack)
-  }
+  for (let i = 0; i < localidades.length; i++) {
 
-  for (let i = 0; i < links.length; i++) {
-    elementos.push(localidades[i].kw)
-
-
+    const [links] = await pool.query('SELECT sitio, target FROM sitios_localidades_'+ req.params.pais +' WHERE localidad = "'+ localidades[i].localidad +'"')
+    console.log('SELECT sitio FROM sitios_localidades_'+ req.params.pais +' WHERE localidad = "'+ localidades[i].localidad +'"')
+    let links_pack = []
     let rank_pack0 = []
     let rank_pack1 = []
     let link_SEO_pack = []
+    let kw_pack = []
+    let elementos_pack = []
 
-    for (let k = 0; k < links[i].length; k++) {
-      const [resultado] = await pool.query('SELECT target FROM sitios_localidades_'+ req.params.pais +' WHERE sitio = "'+ links[i][k] +'"')
-      if(resultado[0]){
-        kw.push(resultado[0].target)
-      } else {
-        kw.push('undefined')
-      }
+    for (let k = 0; k < links.length; k++) {
+
+      links_pack.push(links[k].sitio)
+      kw_pack.push(links[k].target)
+      elementos_pack.push(links[k].target +' '+ localidades[i].localidad)
+      
 
       let suma = 0
 
       for (let l = 0; l < empresas.length; l++) {
         let [tabla] = await pool.query('SELECT TABLE_NAME FROM information_schema.TABLES WHERE table_name = "' + empresas[l].nombre + '_' + req.params.pais + '"')
         if (tabla.length > 0) {
-          const [num] = await pool.query('SELECT count(*) as suma FROM ' + empresas[l].nombre + '_' + req.params.pais + ' WHERE url_destino = "' + links[i][k] + '"')
+          const [num] = await pool.query('SELECT count(*) as suma FROM ' + empresas[l].nombre + '_' + req.params.pais + ' WHERE url_destino = "' + links[k].sitio + '"')
           suma += num[0].suma
         }
       }
 
       link_SEO_pack.push(suma)
 
-      const [rank0] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + links[i][k] + '" AND date = "' + req.query.fin + '" AND kw = "'+ localidades[i].kw + '"')
+      const [rank0] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + links[k].sitio + '" AND date = "' + req.query.fin + '"')
       if (rank0[0]) {
         rank_pack0.push(rank0[0].rank)
       } else {
         rank_pack0.push(100)
       }
 
-      const [rank1] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + links[i][k] + '" AND date = "' + req.query.inicio + '" AND kw = "' + localidades[i].kw + '"')
+      const [rank1] = await pool.query('SELECT rank FROM rankings_' + req.params.pais + '_localidades WHERE url = "' + links[k].sitio + '" AND date = "' + req.query.inicio + '"')
       if (rank1[0]) {
         rank_pack1.push(rank1[0].rank)
       } else {
@@ -221,16 +212,22 @@ router.get('/enlaces-localidades/:pais', isLoggedIn, async (req, res, next) => {
     ranks0.push(rank_pack0)
     ranks1.push(rank_pack1)
     links_SEO.push(link_SEO_pack)
+    links_list.push(links_pack)
+    kw.push(kw_pack)
+    elementos.push(elementos_pack)
   }
+
+  console.log(elementos, localidades, links_list, kw, ranks0, ranks1, links_SEO)
 
   res.render('viewsDB/enlaces_localidades', {
     inicio: req.query.inicio,
     fin: req.query.fin,
     pais: req.params.pais,
+    localidades,
     paises,
     targets,
     elementos,
-    links,
+    links: links_list,
     ranks0,
     ranks1,
     links_SEO,
